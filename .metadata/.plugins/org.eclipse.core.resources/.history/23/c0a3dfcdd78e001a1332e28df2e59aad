@@ -47,8 +47,6 @@ public class cmslandtestandlinkverify extends Cmsbase{
 			logger.log(LogStatus.FAIL, "not landed on home page");
 		}
 		//Loggs.infolog("verify landing page test done");
-		
-		System.out.println("added by nihal");
 		as.assertAll();
 		
 		
