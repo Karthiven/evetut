@@ -1,0 +1,141 @@
+package base;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.asserts.SoftAssert;
+
+import config.Properties;
+import pages.landingpage;
+import pages.unpwpage;
+
+
+public class Cmsbase {
+	
+	public static WebDriver driver=null;
+	
+	public SoftAssert as;
+	
+	public final static long WAIT_SEC_1 = 1;
+    public final static long WAIT_SEC_2 = 2;
+    public final static long WAIT_SEC_3 = 3;
+    public final static long WAIT_SEC_5 = 5;
+   
+    
+    public landingpage lp;
+    public 	unpwpage unpw;
+	
+    
+	
+	public static void doWaitSec(long seconds) {
+        try
+        {
+            Thread.sleep(seconds * 1000);
+        } 
+        catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            // e.printStackTrace();
+        }
+    }
+	
+	
+	public void Acti_Setup() throws IOException, InterruptedException  //Loading chrome driver setup
+	{
+		
+		Properties prop=new Properties("Envirnoment");
+		
+		
+		
+		if(prop.getdata("env").equals("chrome"))
+		{
+			
+		ChromeOptions option=new ChromeOptions();
+		option.addArguments("start-maximized");
+		option.addArguments("disable-infobars");
+		System.setProperty( "webdriver.chrome.driver",prop.getdata("chromedriver"));
+		driver=new ChromeDriver(option);
+		doWaitSec(WAIT_SEC_1);
+        driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        driver.manage().deleteAllCookies();
+                
+
+		}
+		
+		else if(prop.getdata("env").equals("Firefox"))
+		{
+			
+			System.setProperty("webdriver.gecko.driver", prop.getdata("firefoxdriver"));
+			driver=new FirefoxDriver();	
+			
+		}
+		doWaitSec(WAIT_SEC_1);
+		
+	}
+	
+	@BeforeMethod                                               //Login with un and pwd
+	public void Launch() throws IOException, InterruptedException
+	{
+		
+		Acti_Setup(); // setups being loaded
+		
+		
+		WebDriverWait expwait_2= new WebDriverWait(driver,2);
+		WebDriverWait expwait_3= new WebDriverWait(driver,3);
+		WebDriverWait expwait_5= new WebDriverWait(driver,5);
+		
+		// as= new SoftAssert();
+		
+		Properties prop=new Properties("cmsdata");
+		driver.get(prop.getdata("url"));         // launching url
+		
+		doWaitSec(WAIT_SEC_5);
+		
+		((JavascriptExecutor) driver).executeScript("scroll(0, 800)");
+		
+	 
+	    
+		//((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", e);
+	    
+		doWaitSec(WAIT_SEC_3);
+	    
+		
+	  //  expwait_3.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Log in")));
+	    
+	    lp=new landingpage();
+	    WebElement e= lp.getlogin();
+	    
+		lp.getlogin().click();
+		doWaitSec(WAIT_SEC_1);
+		
+		
+		 unpw=new unpwpage();
+		 unpw.getun().sendKeys(prop.getdata("username"));
+		 doWaitSec(WAIT_SEC_1);
+		 unpw.getpwd().sendKeys(prop.getdata("password"));
+		 doWaitSec(WAIT_SEC_1);
+		 unpw.getsubbuton().click();
+		 doWaitSec(WAIT_SEC_1);
+		
+		 
+		 
+	}
+	
+	
+	
+	@AfterMethod      //close the browser
+	public void close()
+	{
+		driver.close();
+	}
+
+}

@@ -1,0 +1,15 @@
+package test;
+
+import org.testng.annotations.Test;
+
+import base.Cmsbase;
+
+public class Sample_test extends Cmsbase {
+	
+	@Test
+	public void m()
+	{
+		System.out.println("sample test");
+	}
+
+}

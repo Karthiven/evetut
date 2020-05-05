@@ -1,0 +1,14 @@
+package config;
+
+import org.apache.log4j.Logger;
+
+public class Loggs {
+	
+	static Logger logger;
+	public static void  camlog(String text)
+	{
+		logger= logger.getLogger("devpinoyLogger");
+		logger.info(text);
+	}
+
+}
